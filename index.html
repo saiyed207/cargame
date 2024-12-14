@@ -80,33 +80,6 @@
   </div>
 
   <script>
-
-document.addEventListener('deviceready', function() {
-      if (window.AdMob) {
-        // Create Banner Ad
-        window.AdMob.createBanner({
-          adId: 'ca-app-pub-9087571745121617/7817618170', // Replace with your banner Ad Unit ID
-          isTesting: true, // Change to false when you are ready for production
-          position: window.AdMob.AD_POSITION.BOTTOM_CENTER,
-          autoShow: true
-        });
-
-        // Prepare Interstitial Ad
-        window.AdMob.prepareInterstitial({
-          adId: 'ca-app-pub-9087571745121617/6827836682', // Replace with your interstitial Ad Unit ID
-          autoShow: false
-        });
-
-        // Show Interstitial ad on game over
-        document.getElementById('restartBtn').addEventListener('click', function() {
-          if (window.AdMob) {
-            window.AdMob.showInterstitial();
-          }
-        });
-      }
-    }, false);
-
-
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const gameOverMessage = document.getElementById('gameOverMessage');
@@ -215,17 +188,6 @@ document.addEventListener('deviceready', function() {
     // Car movement
     function moveCar() {
       // Move the car left or right by one lane (A/D)
-      if (keys.left && carLane > 0) {
-        carLane--; // Move one lane to the left
-      }
-      if (keys.right && carLane < 2) {
-        carLane++; // Move one lane to the right
-      }
-
-      // Accelerate or decelerate the car (W/S)
-      if (keys.up) carY -= carSpeed; // Move car up (accelerate)
-      if (keys.down) carY += carSpeed; // Move car down (decelerate)
-
       carX = laneWidth * carLane + (laneWidth - carWidth) / 2; // Update car's X position
     }
 
@@ -324,35 +286,12 @@ document.addEventListener('deviceready', function() {
       gameLoop();
     }
 
-    // Keyboard events for controls (W, A, S, D)
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'a' || e.key === 'A') {
-        keys.left = true;
-      }
-      if (e.key === 'd' || e.key === 'D') {
-        keys.right = true;
-      }
-      if (e.key === 'w' || e.key === 'W') {
-        keys.up = true;
-      }
-      if (e.key === 's' || e.key === 'S') {
-        keys.down = true;
-      }
-    });
-
-    document.addEventListener('keyup', function(e) {
-      if (e.key === 'a' || e.key === 'A') {
-        keys.left = false;
-      }
-      if (e.key === 'd' || e.key === 'D') {
-        keys.right = false;
-      }
-      if (e.key === 'w' || e.key === 'W') {
-        keys.up = false;
-      }
-      if (e.key === 's' || e.key === 'S') {
-        keys.down = false;
-      }
+    // Mouse click event to select the lane
+    canvas.addEventListener('click', function(e) {
+      const mouseX = e.offsetX; // Get X position of the mouse click
+      const clickedLane = Math.floor(mouseX / laneWidth); // Determine lane based on X position
+      carLane = clickedLane; // Update the car's lane
+      carX = laneWidth * carLane + (laneWidth - carWidth) / 2; // Update car's X position
     });
 
     // Restart game when the button is clicked
